@@ -1,0 +1,127 @@
+@import 'tailwindcss';
+
+/* ===== Cyeza Café brand tokens (from the poster) =====
+   Each --color-* becomes utilities: bg-espresso, text-gold-light, border-line ... */
+@theme {
+  --color-espresso: #2a170e;
+  --color-coffee: #4a2c1a;
+  --color-mocha: #7a4b2e;
+  --color-gold: #c9a14a;
+  --color-gold-light: #e3c377;
+  --color-amber: #f2b24a;
+  --color-cream: #fbf5ea;
+  --color-parchment: #f3e6cf;
+  --color-ink: #2b1d14;
+  --color-muted: #8a735f;
+  --color-line: #e6d5b8;
+  --color-success: #2f7d4f;
+  --color-danger: #b3382c;
+  --color-warning: #c98a16;
+
+  --font-head: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --shadow-soft: 0 2px 8px rgba(42, 23, 14, 0.1);
+  --shadow-lift: 0 6px 24px rgba(42, 23, 14, 0.14);
+
+  --animate-fade-in: fade-in 0.35s ease both;
+  --animate-shimmer: shimmer 1.3s infinite;
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes shimmer {
+    to { background-position: -200% 0; }
+  }
+}
+
+@layer base {
+  html, body {
+    margin: 0;
+    @apply bg-cream font-sans text-ink antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* On desktop the customer app sits in a dark frame, like a phone */
+  @media (min-width: 560px) {
+    body { @apply bg-espresso; }
+  }
+  h1, h2, h3, h4 { @apply font-head text-espresso leading-tight; }
+  button, input, select, textarea { font: inherit; }
+}
+
+/* ===== Reusable pieces, so the JSX stays short ===== */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-coffee px-5 py-3 font-semibold text-cream
+      transition hover:bg-espresso active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-gold { @apply bg-gold text-espresso hover:bg-gold-light; }
+  .btn-outline { @apply border-[1.5px] border-coffee bg-transparent text-coffee hover:bg-parchment; }
+  .btn-danger { @apply bg-danger hover:bg-danger/90; }
+  .btn-sm { @apply px-3.5 py-1.5 text-sm; }
+
+  .card { @apply rounded-2xl border border-line bg-white p-4 shadow-soft; }
+  .card-dark { @apply border-0 bg-linear-to-br from-espresso to-coffee text-cream; }
+  .card-dark h1, .card-dark h2, .card-dark h3 { @apply text-gold-light; }
+
+  .input {
+    @apply w-full rounded-[10px] border-[1.5px] border-line bg-white px-3.5 py-3 outline-none transition
+      focus:border-gold focus:ring-4 focus:ring-gold/25;
+  }
+  .label { @apply mb-1.5 block text-sm font-semibold text-coffee; }
+
+  .chip { @apply flex-none cursor-pointer rounded-full border-[1.5px] border-line bg-white px-4 py-2 font-medium; }
+  .chip-active { @apply border-coffee bg-coffee text-cream; }
+
+  .badge { @apply inline-block rounded-full bg-parchment px-2.5 py-0.5 text-xs font-semibold text-coffee; }
+  .badge-pending { @apply bg-[#fdeccb] text-[#8a5a00]; }
+  .badge-preparing { @apply bg-[#dbe9fb] text-[#1f4f8f]; }
+  .badge-ready { @apply bg-[#d5f0df] text-[#1f6b3d]; }
+  .badge-completed { @apply bg-[#e4e1dc] text-[#4d463e]; }
+  .badge-cancelled { @apply bg-[#f8d9d5] text-[#8f2a20]; }
+
+  .skeleton {
+    @apply animate-shimmer min-h-20 rounded-[10px] bg-[length:200%_100%]
+      bg-linear-to-r from-parchment via-[#fff6e6] to-parchment;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== Hot coffee loading animation ===== */
+@keyframes steam-rise {
+  0% { opacity: 0; transform: translateY(10px) scaleY(0.8); }
+  30% { opacity: 0.85; }
+  100% { opacity: 0; transform: translateY(-22px) scaleY(1.15); }
+}
+.steam-wisp {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: steam-rise 2.6s ease-in-out infinite;
+}
+
+@keyframes heat-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+.heat-glow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: heat-pulse 2.6s ease-in-out infinite;
+}
+
+@keyframes coffee-ripple {
+  0%, 100% { transform: translateX(0) scaleX(1); }
+  50% { transform: translateX(6px) scaleX(0.9); }
+}
+.coffee-surface {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: coffee-ripple 2.6s ease-in-out infinite;
+}
